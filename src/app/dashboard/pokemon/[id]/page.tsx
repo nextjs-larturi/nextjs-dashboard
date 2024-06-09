@@ -1,4 +1,5 @@
 import { Pokemon } from '@/pokemons'
+import { notFound } from 'next/navigation'
 import { capitalizeFirstLetter } from '@/utils/utils'
 import { Metadata } from 'next'
 import Image from 'next/image'
@@ -8,22 +9,31 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id, name } = await getPokemon(params.id)
+  try {
+    const { id, name } = await getPokemon(params.id)
 
-  return {
-    title: `${capitalizeFirstLetter(name)}`,
-    description: `Pokemon ${id}`
+    return {
+      title: `${capitalizeFirstLetter(name)}`,
+      description: `Pokemon ${id}`
+    }
+  } catch (error) {
+    return {
+      title: 'Pokemon Page',
+      description: 'Pokemon Page'
+    }
   }
 }
 
 const getPokemon = async (id: string): Promise<Pokemon> => {
-  const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
-    cache: 'force-cache'
-  }).then((resp) => resp.json())
+  try {
+    const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
+      cache: 'force-cache'
+    }).then((resp) => resp.json())
 
-  console.log(`Se cargo pokemon ${pokemon.name}`)
-
-  return pokemon
+    return pokemon
+  } catch (error) {
+    notFound()
+  }
 }
 
 export default async function PokemonPage({ params }: Props) {
