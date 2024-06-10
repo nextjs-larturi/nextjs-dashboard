@@ -10,7 +10,7 @@ interface Props {
   subtitle: string
 }
 
-export default function SidebarMenuItem({ path, icon, title, subtitle }: Props) {
+export const SidebarMenuItem = ({ path, icon, title, subtitle }: Props) => {
   const currentPath = usePathname()
   return (
     <Link
